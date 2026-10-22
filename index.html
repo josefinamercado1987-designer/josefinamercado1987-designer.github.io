@@ -390,11 +390,12 @@
         </div>
       </div>
 
-      <!-- El formulario envía los mensajes a tu mail mediante FormSubmit (gratis). La primera vez llega un mail para activarlo. -->
-      <form class="form" id="contactForm" action="https://formsubmit.co/josefinamercado1987@gmail.com" method="POST">
-        <input type="hidden" name="_subject" value="Nuevo mensaje desde tu portfolio">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+      <!-- El formulario envía los mensajes a tu Gmail mediante Web3Forms (gratis). -->
+      <form class="form" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="a868d27c-b1f5-4f94-a2e1-9b2204d10101">
+        <input type="hidden" name="subject" value="Nuevo mensaje desde tu portfolio">
+        <input type="hidden" name="from_name" value="Portfolio Josefina Mercado">
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
         <div class="field"><label for="f-name">Nombre</label><input id="f-name" name="nombre" type="text" autocomplete="name" required></div>
         <div class="field"><label for="f-mail">Mail</label><input id="f-mail" name="email" type="email" autocomplete="email" required></div>
         <div class="field"><label for="f-msg">Mensaje</label><textarea id="f-msg" name="mensaje" required></textarea></div>
@@ -469,14 +470,20 @@
     jobs.forEach(function(j){ io.observe(j); });
   })();
 
-  // Formulario: envía sin salir de la página y muestra un mensaje de confirmación
+  // Formulario: envía con Web3Forms sin salir de la página
   (function(){
-    var f=document.getElementById('contactForm'), msg=document.getElementById('formMsg');
+    var f=document.getElementById('contactForm'), msg=document.getElementById('formMsg'), btn=f.querySelector('.send');
     f.addEventListener('submit',function(e){
-      e.preventDefault(); msg.textContent='Enviando…';
-      fetch(f.action.replace('formsubmit.co/','formsubmit.co/ajax/'),{method:'POST',headers:{'Accept':'application/json'},body:new FormData(f)})
-        .then(function(r){ if(!r.ok) throw 0; f.reset(); msg.textContent='¡Gracias! Tu mensaje llegó. Te respondo pronto.'; })
-        .catch(function(){ msg.textContent='No se pudo enviar. Escribime directamente a josefinamercado1987@gmail.com.'; });
+      e.preventDefault(); msg.textContent='Enviando…'; btn.disabled=true;
+      var data=Object.fromEntries(new FormData(f));
+      fetch(f.action,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)})
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if(!d.success) throw 0;
+          f.reset(); msg.textContent='¡Gracias! Tu mensaje llegó. Te respondo pronto.';
+        })
+        .catch(function(){ msg.textContent='No se pudo enviar. Escribime directamente a josefinamercado1987@gmail.com.'; })
+        .finally(function(){ btn.disabled=false; });
     });
   })();
 </script>
