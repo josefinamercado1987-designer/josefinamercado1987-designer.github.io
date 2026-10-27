@@ -73,19 +73,9 @@
   .hero-foot .pill{color:#F4F4F0}
   .hero-foot .pill:hover,.hero-foot .pill:focus-visible{background:#fff;color:var(--ink);border-color:#fff}
 
-  .astro{position:absolute;z-index:4;left:clamp(300px,31vw,620px);top:38vh;height:125vh;aspect-ratio:406/937;will-change:transform}
+  .astro{position:absolute;z-index:4;left:clamp(320px,33vw,640px);top:41vh;height:108vh;aspect-ratio:406/937;will-change:transform}
   .astro .flota{position:relative;width:100%;height:100%;transform-origin:50% 40%;animation:flotar 7s ease-in-out infinite}
   .astro img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 30px 40px rgba(0,0,0,.22))}
-  /* Reflejo de luz que recorre el traje plateado, solo dentro de la silueta */
-  .astro .brillo{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;
-    -webkit-mask:url(img/astronauta-v2.webp) center/contain no-repeat;mask:url(img/astronauta-v2.webp) center/contain no-repeat;
-    background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(20,24,40,.55) 40%,rgba(255,255,255,1) 48%,rgba(255,255,255,.6) 53%,rgba(20,24,40,.35) 60%,rgba(255,255,255,0) 70%);
-    background-size:100% 260%;animation:brillo 6s ease-in-out infinite}
-  /* Reflejo del cielo sobre el traje: arriba toma el verde oscuro, abajo el blanco de las nubes */
-  .astro .reflejo{position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;
-    -webkit-mask:url(img/astronauta-v2.webp) center/contain no-repeat;mask:url(img/astronauta-v2.webp) center/contain no-repeat;
-    background:linear-gradient(180deg,rgba(22,48,43,.85) 0%,rgba(62,107,98,.5) 45%,rgba(255,255,255,.7) 100%)}
-  @keyframes brillo{0%{background-position:0 100%}55%,100%{background-position:0 0}}
   /* Movimiento constante y suave, como en gravedad cero */
   @keyframes flotar{
     0%{transform:translate(0,0) rotate(-1.5deg)}
@@ -245,7 +235,7 @@
     .menu-btn{display:inline-block}
     .hero-track{height:330vh}
     .hero h1{top:96px}
-    .astro{left:50%;margin-left:calc(-84vh*406/937/2);top:46vh;height:84vh}
+    .astro{left:50%;margin-left:calc(-74vh*406/937/2);top:48vh;height:74vh}
     .clouds{left:-70%;width:240%}
     .lema{flex-direction:column;gap:14px;font-size:clamp(36px,11vw,60px)}
     .hero-foot{top:calc(96px + clamp(54px,10.5vw,170px)*1.95)}
@@ -258,7 +248,7 @@
     .hero{position:relative}
     .clouds{transform:none!important}
     .bruma,.velo{display:none}
-    .astro .flota,.astro .brillo{animation:none}
+    .astro .flota{animation:none}
     .whiteout{display:none}
     .lema{display:none}
   }
@@ -286,7 +276,7 @@
     <div class="hero">
       <h1><span>UX / UI</span><span>Designer</span></h1>
 
-      <div class="astro" id="astro" aria-hidden="true"><div class="flota"><img src="img/astronauta-v2.webp" alt=""><span class="reflejo"></span><span class="brillo"></span></div></div>
+      <div class="astro" id="astro" aria-hidden="true"><div class="flota"><img src="img/astronauta-v2.webp" alt=""></div></div>
 
       <div class="clouds back" id="cloudsBack" aria-hidden="true">
         <svg viewBox="0 0 1600 600" preserveAspectRatio="none">
@@ -516,12 +506,13 @@
       function ease(t){return t*t*(3-2*t);}
       var a=clamp(P/0.25);           // 1) la astronauta sube y asoma entre las nubes
       var b=clamp((P-0.25)/0.27);    // 2) las nubes la envuelven hasta el casco
-      var c=clamp(P/0.52);           //    las nubes suben durante 1) y 2)
+      var c=clamp(P/0.6);            //    las nubes suben despacio durante 1) y 2)
       var q=clamp((P-0.56)/0.34);    // 4) las palabras surgen desde las nubes y se acomodan
       var y=-ease(a)*h*0.28 + ease(b)*h*0.12, r=ease(b)*4, x=Math.sin(a*Math.PI)*w*0.01;
       astro.style.transform='translate('+x+'px,'+y+'px) rotate('+r+'deg)';
-      title.style.opacity=1-clamp(a*1.4);
-      foot.style.opacity=1-clamp(a*2);
+      astro.style.opacity=1-ease(clamp((P-0.2)/0.36));   // se va desvaneciendo de a poco entre las nubes
+      title.style.opacity=1-ease(clamp((P-0.04)/0.32));   // el título se desvanece despacio
+      foot.style.opacity=1-ease(clamp((P-0.03)/0.26));
       back.style.transform='translateY('+(-ease(c)*h*0.4)+'px)';
       front.style.transform='translateY('+(-ease(c)*h*0.95)+'px) scale('+(1+c*0.25)+')';
       bruma.style.opacity=clamp((P-0.18)/0.3)*0.9;          // 3) las nubes se tiñen de violeta y menta
